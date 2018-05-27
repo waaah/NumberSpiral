@@ -10,7 +10,7 @@
 			$this->dimensions = $num_items ** 2;
 			$this->matrix = array();
 			while($num_items > 0){
-				array_push($this->matrix, array(0,0,0,0,0));
+				array_push($this->matrix, array(0,0,0,0,0,0,0,0));
 				$num_items--;
 			}
 			$this->direction = $direction;
@@ -25,10 +25,32 @@
 			//spin number is 0
 			$start = $spinNumber;//row to start
 			$end = $this->num_items - $spinNumber; //row to end
-			//on 2d set index;
-			for($h = $start; $h < $end; $h++){
-				//spin logic goes here
+			//between end and start index;
+
+			for($h = $start; $h < $end; $h++){			
+				if($h != $start && $h != $end - 1){
+					
+					self::setIndex($h, $end-1, $this->current--);
+					//this has a value of the next element. Example if 
+					//prev line has 1 this has 0;
+					self::setIndex($h, 0 , 0);
+				}
+				else{
+					if($start != $h){
+						for($v = $end - 1; $v >= $start; $v--)
+							self::setIndex($h, $v, $this->current--);
+						$row_decrement = 0;
+					}
+					else{
+						for($v = $start; $v < $end; $v++)
+							self::setIndex($h, $v, $this->current--);
+						//when it reaches the end set row increment to 0			
+					}
+				}
+				//subtract since loops are lessened
 			}
+			//subtracts items that were left out in #1
+			$this->current-=$this->num_items-2;
 			//spin again if the current index is greater than 0
 			if($this->current >= 0){
 				//Add spin by 1;
@@ -48,6 +70,6 @@
 			}
 		}
 	}
-	$spiralGenerator = new SpiralGenerator(5);
+	$spiralGenerator = new SpiralGenerator(6);
 	$spiralGenerator->generateItems();
     $spiralGenerator->printMatrix();
