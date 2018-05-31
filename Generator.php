@@ -1,15 +1,9 @@
 <?php
-	class SpiralGenerator{
-		private $num_items; //number of items in the spiral
-		private $dimensions;//dimensions
-		private $matrix; //the matrix itself
-		private $direction; //direction
-		private $current; //current item in the matrix
-		function __construct($num_items, $direction = NULL){
-			$this->num_items = $num_items;
-			$this->dimensions = $num_items ** 2;
-			$this->matrix = array();
+	class SpiralGenerator extends Matrix{
+		protected $direction;
+		public function __construct($num_items, $direction = NULL){
 			$this->direction = $direction;
+			parent::__construct($num_items);
 		}
 		private function getCurrent(){
 			return $this->current;
@@ -20,11 +14,7 @@
 		public function generateItems(){
 			//sets the current index;
 			$this->current = $this->dimensions - 1;
-			$num_items = $this->num_items;
-			while($num_items > 0){
-				array_push($this->matrix, array());
-				$num_items--;
-			}
+			
 			//start spin cycle
 			self::createSpiral();		
 		}
@@ -62,7 +52,26 @@
 			self::setCurrent($curr);
 		}
 		
-		private function setIndex($h, $v, $item){
+		
+	}
+	class Matrix{
+		protected $num_items; //number of items in the spiral
+		protected $dimensions;//dimensions
+		protected $matrix; //the matrix itself
+		protected $direction; //direction
+		protected $current; //current item in the matrix
+		public function __construct($num_items){
+			$this->num_items = $num_items;
+			$this->dimensions = $num_items ** 2;
+			$this->matrix = array();
+			$this->matrix = array();
+			$num_items = $this->num_items;
+			while($num_items > 0){
+				array_push($this->matrix, array());
+				$num_items--;
+			}
+		}
+		protected function setIndex($h, $v, $item){
 			$this->matrix[$h][$v] = $item;
 		}
 		public function printMatrix(){
