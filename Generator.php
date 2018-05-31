@@ -9,67 +9,74 @@
 			$this->num_items = $num_items;
 			$this->dimensions = $num_items ** 2;
 			$this->matrix = array();
-			while($num_items > 0){
-				array_push($this->matrix, array(0,0,0,0,0,0,0,0));
-				$num_items--;
-			}
 			$this->direction = $direction;
 		}
-		
+		private function getCurrent(){
+			return $this->current;
+		}
+		private function setCurrent($current){
+			$this->current = $current;
+		}
 		public function generateItems(){
 			//sets the current index;
 			$this->current = $this->dimensions - 1;
-			self::spin(0);		
-		}
-		private function spin($spinNumber){
-			//spin number is 0
-			$start = $spinNumber;//row to start
-			$end = $this->num_items - $spinNumber; //row to end
-			//between end and start index;
-
-			for($h = $start; $h < $end; $h++){			
-				if($h != $start && $h != $end - 1){
-					
-					self::setIndex($h, $end-1, $this->current--);
-					//this has a value of the next element. Example if 
-					//prev line has 1 this has 0;
-					self::setIndex($h, 0 , 0);
-				}
-				else{
-					if($start != $h){
-						for($v = $end - 1; $v >= $start; $v--)
-							self::setIndex($h, $v, $this->current--);
-						$row_decrement = 0;
-					}
-					else{
-						for($v = $start; $v < $end; $v++)
-							self::setIndex($h, $v, $this->current--);
-						//when it reaches the end set row increment to 0			
-					}
-				}
-				//subtract since loops are lessened
+			$num_items = $this->num_items;
+			while($num_items > 0){
+				array_push($this->matrix, array());
+				$num_items--;
 			}
-			//subtracts items that were left out in #1
-			$this->current-=$this->num_items-2;
-			//spin again if the current index is greater than 0
-			if($this->current >= 0){
-				//Add spin by 1;
-				//Per cycle the N of an index is reduced by 2
-				self::spin(++$start,--$end);
+			//start spin cycle
+			self::createSpiral();		
+		}
+		private function createSpiral(){
+			$spinNumber = 0;
+			while(self::getCurrent() >= 0){
+				self::spin($spinNumber);
+				$spinNumber++;
 			}
 		}
+		private function spin($spinNumber, $curr = NULL){
+			$start = $spinNumber;
+			//since the array is zero based, it wouldn't make 
+			//sense that the value is equal to the original number
+			//of items;
+			$end = $this->num_items - $spinNumber - 1;
+			$curr = self::getCurrent();
+			//top
+			for($v = $start; $v <= $end; $v++){
+				self::setIndex($start, $v, $curr--);
+			}
+			//next side
+			for($h = $start + 1; $h <= $end - 1; $h++){
+				//sets end of matrix
+				self::setIndex($h, $end, $curr-- );
+			}
+			//bottom
+			for($v = $end; $v >= $start; $v--){
+				self::setIndex($end, $v, $curr--);
+			}
+			//last side
+			for($h = $end - 1; $h >= $start+1; $h--){
+				self::setIndex($h, $start, $curr--);
+			}
+			self::setCurrent($curr);
+		}
+		
 		private function setIndex($h, $v, $item){
 			$this->matrix[$h][$v] = $item;
 		}
 		public function printMatrix(){
+			print "<table border=1>";
 			for($h = 0; $h < $this->num_items; $h++){
+				print "<tr>";
 				for($v = 0; $v < $this->num_items; $v++){
-					print $this->matrix[$h][$v]." ";
+					print "<td>".$this->matrix[$h][$v]."</td>";
 				}
-				print "<br>";
+				print "</tr>";
 			}
+			print "</table>";
 		}
 	}
-	$spiralGenerator = new SpiralGenerator(6);
+	$spiralGenerator = new SpiralGenerator(8);
 	$spiralGenerator->generateItems();
-    $spiralGenerator->printMatrix();
+    	$spiralGenerator->printMatrix();
