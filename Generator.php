@@ -1,6 +1,7 @@
 <?php
 	class SpiralGenerator extends Matrix{
 		protected $direction;
+		protected $swap;
 		public function __construct($num_items, $direction = NULL){
 			$this->direction = $direction;
 			parent::__construct($num_items);
