@@ -25,17 +25,24 @@
 				$spinNumber++;
 			}
 		}
-		private function spin($spinNumber, $curr = NULL){
+		private function spin($spinNumber){
 			$start = $spinNumber;
 			//since the array is zero based, it wouldn't make 
 			//sense that the value is equal to the original number
 			//of items;
 			$end = $this->num_items - $spinNumber - 1;
 			$curr = self::getCurrent();
-			self::traverseX($start, $end, $start);
+			$i = 0;
+			while($i < 2){
+				self::traverseX($start, $end);
+				self::traverseY($start, $end);
+				self::changeDirection();
+				$i++;
+			}
 			
 		}
-		private function traverseX($start, $end, $y){
+		private function traverseX($start, $end){
+            $y = $this->direction == "r" ? $end : $start;
 			$curr = self::getCurrent();
             if($this->direction != "r"){
                 for($x = $start; $x <= $end; $x++){
@@ -50,7 +57,8 @@
 			self::setCurrent($curr);
 			return $curr;
         }
-        private function traverseY($start, $end, $x){
+        private function traverseY($start, $end){
+            $x = $this->direction == "r" ? $start : $end;
 			$curr = self::getCurrent();
             if($this->direction != "r"){
                 for($y = $start + 1; $y <= $end - 1; $y++){
@@ -65,7 +73,7 @@
 			self::setCurrent($curr);
 			return $curr;
         }
-        private function setDirection(){
+        private function changeDirection(){
             $this->direction = $this->direction == "r" ? NULL: "r";
         }
 
@@ -103,6 +111,6 @@
 			print "</table>";
 		}
 	}
-	$spiralGenerator = new SpiralGenerator(8);
+	$spiralGenerator = new SpiralGenerator(8,"r");
 	$spiralGenerator->generateItems();
     	$spiralGenerator->printMatrix();
