@@ -32,26 +32,43 @@
 			//of items;
 			$end = $this->num_items - $spinNumber - 1;
 			$curr = self::getCurrent();
-			//top
-			for($v = $start; $v <= $end; $v++){
-				self::setIndex($start, $v, $curr--);
-			}
-			//next side
-			for($h = $start + 1; $h <= $end - 1; $h++){
-				//sets end of matrix
-				self::setIndex($h, $end, $curr-- );
-			}
-			//bottom
-			for($v = $end; $v >= $start; $v--){
-				self::setIndex($end, $v, $curr--);
-			}
-			//last side
-			for($h = $end - 1; $h >= $start+1; $h--){
-				self::setIndex($h, $start, $curr--);
-			}
-			self::setCurrent($curr);
+			self::traverseX($start, $end, $start);
+			
 		}
-		
+		private function traverseX($start, $end, $y){
+			$curr = self::getCurrent();
+            if($this->direction != "r"){
+                for($x = $start; $x <= $end; $x++){
+                    self::setIndex($y, $x, $curr--);
+                }
+            }
+            else{
+                for($x = $end; $x >= $start; $x--){
+                    self::setIndex($y, $x, $curr--);
+                }
+            }
+			self::setCurrent($curr);
+			return $curr;
+        }
+        private function traverseY($start, $end, $x){
+			$curr = self::getCurrent();
+            if($this->direction != "r"){
+                for($y = $start + 1; $y <= $end - 1; $y++){
+                    self::setIndex($y, $x, $curr-- );
+                }
+            }
+            else{
+                for($y = $end - 1; $y >= $start+1; $y--){
+                    self::setIndex($y, $x, $curr--);
+                }
+            }
+			self::setCurrent($curr);
+			return $curr;
+        }
+        private function setDirection(){
+            $this->direction = $this->direction == "r" ? NULL: "r";
+        }
+
 		
 	}
 	class Matrix{
@@ -71,15 +88,15 @@
 				$num_items--;
 			}
 		}
-		protected function setIndex($h, $v, $item){
-			$this->matrix[$h][$v] = $item;
+		protected function setIndex($y, $x, $item){
+			$this->matrix[$y][$x] = $item;
 		}
 		public function printMatrix(){
 			print "<table border=1>";
-			for($h = 0; $h < $this->num_items; $h++){
+			for($y = 0; $y < $this->num_items; $y++){
 				print "<tr>";
-				for($v = 0; $v < $this->num_items; $v++){
-					print "<td>".$this->matrix[$h][$v]."</td>";
+				for($x = 0; $x < $this->num_items; $x++){
+					print "<td>".$this->matrix[$y][$x]."</td>";
 				}
 				print "</tr>";
 			}
